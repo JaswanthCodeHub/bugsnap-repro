@@ -15,25 +15,87 @@ BugSnap Repro helps development teams turn browser bug reports into actionable, 
 - Connect reports to GitHub Issues.
 - Support local development and self-hosting.
 
-## Planned architecture
+## Repository structure
 
 This repository is a TypeScript monorepo:
 
-- `apps/dashboard` — React dashboard.
+- `apps/dashboard` — React + Vite dashboard.
 - `apps/api` — Fastify HTTP API.
 - `packages/widget` — embeddable browser reporting SDK.
-- `packages/shared` — shared types and schemas.
+- `packages/shared` — shared types and contracts.
 - `packages/playwright-generator` — reproduction test generation.
-- `infra` — local infrastructure and deployment assets.
-- `docs` — architecture and developer documentation.
+- `infra` — local infrastructure assets.
+
+## Requirements
+
+- Node.js (use an active LTS release).
+- pnpm.
+- Docker Desktop (only needed for the local PostgreSQL service).
+
+## Local development
+
+Clone the repository:
+
+```bash
+git clone https://github.com/JaswanthCodeHub/bugsnap-repro.git
+cd bugsnap-repro
+```
+
+Install pnpm if it is not already available:
+
+```bash
+npm install --global pnpm
+```
+
+Install workspace dependencies:
+
+```bash
+pnpm install
+```
+
+Create your local environment file:
+
+**PowerShell**
+```powershell
+Copy-Item .env.example .env
+```
+
+**macOS / Linux**
+```bash
+cp .env.example .env
+```
+
+Start PostgreSQL (optional for this initial milestone; the API health endpoint does not use the database yet):
+
+```bash
+docker compose --env-file .env -f infra/docker-compose.yml up -d
+```
+
+Start the dashboard and API:
+
+```bash
+pnpm dev
+```
+
+Local development URLs:
+
+- Dashboard: http://127.0.0.1:5173
+- API health: http://127.0.0.1:4000/health
+
+Validate the workspace:
+
+```bash
+pnpm typecheck
+pnpm build
+```
+
+The first `.env` values and PostgreSQL password are for local development only. Replace them before using any shared or deployed environment.
 
 ## Planned technology
 
 TypeScript, React, Vite, Fastify, PostgreSQL, Prisma, Playwright, Vitest, pnpm workspaces, Turborepo, and Docker Compose.
 
-## Development status
-
-The initial repository and architecture are being established. Features will be released incrementally:
+## Development roadmap
 
 1. Repository foundation and local development environment.
 2. Projects, workspaces, and bug report ingestion.
